@@ -57,8 +57,8 @@ These lines should install all the required dependencies. You can test if the in
 
 All the classes and methods are extensively described in an API that can be found in different formats:
 
-1. HTML: (http://kyoto.let.vu.nl/~izquierdo/api/dbpediaEnquirerPy/)[http://kyoto.let.vu.nl/~izquierdo/api/dbpediaEnquirerPy/]
-2. PDF: (http://kyoto.let.vu.nl/~izquierdo/api/dbpediaEnquirerPy/api.pdf)[http://kyoto.let.vu.nl/~izquierdo/api/dbpediaEnquirerPy/api.pdf]
+1. HTML: [http://kyoto.let.vu.nl/~izquierdo/api/dbpediaEnquirerPy/](http://kyoto.let.vu.nl/~izquierdo/api/dbpediaEnquirerPy/)
+2. PDF: [http://kyoto.let.vu.nl/~izquierdo/api/dbpediaEnquirerPy/api.pdf](http://kyoto.let.vu.nl/~izquierdo/api/dbpediaEnquirerPy/api.pdf)
 
 You can also build the documentation locally by running the script `. build_documentation.sh`, which would generate a folder `apidocs` with the whole documentation (you will need
 epydoc installed in order to generate the documentation)
