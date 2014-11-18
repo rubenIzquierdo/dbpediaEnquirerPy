@@ -56,6 +56,7 @@ These lines should install all the required dependencies. You can test if the in
 ##Documentation##
 
 All the classes and methods are extensively described in an API that can be found in different formats:
+
 1. HTML: (http://kyoto.let.vu.nl/~izquierdo/api/dbpediaEnquirerPy/)[http://kyoto.let.vu.nl/~izquierdo/api/dbpediaEnquirerPy/]
 2. PDF: (http://kyoto.let.vu.nl/~izquierdo/api/dbpediaEnquirerPy/api.pdf)[http://kyoto.let.vu.nl/~izquierdo/api/dbpediaEnquirerPy/api.pdf]
 
