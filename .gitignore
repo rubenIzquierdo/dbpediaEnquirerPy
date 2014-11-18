@@ -1,0 +1,5 @@
+*.pyc
+*~
+resources
+.dbpedia_cache
+apidocs
