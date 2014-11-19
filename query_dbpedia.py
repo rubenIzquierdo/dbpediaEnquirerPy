@@ -171,8 +171,9 @@ class Cdbpedia_enquirer:
         pair_label_path = []
         for ontolabel in onto_labels:
             this_path = my_dbpedia_ontology.get_ontology_path(ontolabel)
-            if len(pair_label_path) > 0:
-                deepest = sorted(pair_label_path,key=lambda t: -t[1])[0][0]
+            pair_label_path.append((ontolabel,len(this_path)))
+        if len(pair_label_path) > 0:
+            deepest = sorted(pair_label_path,key=lambda t: -t[1])[0][0]
         return deepest
     
     def get_all_instances_for_ontology_label(self,ontology_label,log=False):
