@@ -66,6 +66,24 @@ class Cdbpedia_ontology:
                 superclass_label = subclass_of_obj.get('{%s}resource' % owl_root.nsmap['rdf'])
                 self.superclass_for_class[onto_label] = superclass_label
 
+    def is_leaf_class(self,onto_label):
+        """
+        Checks if the ontology label provided (for instance http://dbpedia.org/ontology/SportsTeam) is a leaf in the DBpedia ontology tree or not 
+        It is a leaf if it is not super-class of any other class in the ontology
+        @param onto_label: the ontology label
+        @type onto_label: string
+        @return: whether it is a leaf or not
+        @rtype: bool
+        """
+        is_super_class = False
+        for subclass, superclass in self.superclass_for_class.items():
+            if superclass == onto_label:
+                is_super_class = True
+                break
+        if not is_super_class and onto_label not in self.list_labels:
+            return None
+            
+        return not is_super_class
     
     def get_ontology_path(self,onto_label):
         '''
@@ -138,6 +156,25 @@ class Cdbpedia_enquirer:
             fd.close()
         return results
     
+    def get_deepest_ontology_class_for_dblink(self,dblink):
+        """
+        Given a dblink (http://dbpedia.org/resource/Tom_Cruise) gets all the possible ontology classes from dbpedia,
+        calculates the depth of each on in the DBpedia ontology and returns the deepest one
+        @param dblink: the dbpedia link
+        @type dblink: string
+        @return: the deespest DBpedia ontology label
+        @rtype: string
+        """
+        deepest = None
+        my_dbpedia_ontology = Cdbpedia_ontology()
+        onto_labels =  self.get_dbpedia_ontology_labels_for_dblink(dblink)
+        pair_label_path = []
+        for ontolabel in onto_labels:
+            this_path = my_dbpedia_ontology.get_ontology_path(ontolabel)
+            if len(pair_label_path) > 0:
+                deepest = sorted(pair_label_path,key=lambda t: -t[1])[0][0]
+        return deepest
+    
     def get_all_instances_for_ontology_label(self,ontology_label,log=False):
         """
         Given an ontoloy label (like http://dbpedia.org/ontology/SportsTeam), it will return
@@ -161,6 +198,7 @@ class Cdbpedia_enquirer:
                 LIMIT 10000
                 OFFSET %i
                 """ % (ontology_label,len(instances))
+            #print query
             if log:
                 print>>sys.stderr,'Querying dbpedia for',ontology_label,' OFFSET=',len(instances)
                 
