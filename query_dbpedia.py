@@ -129,6 +129,7 @@ class Cdbpedia_enquirer:
     def __init__(self):
         self.__thisfolder__ = os.path.dirname(os.path.realpath(__file__))
         self.__cache_folder__ = self.__thisfolder__+'/.dbpedia_cache'
+        self.__dbpedia_ontology__ = Cdbpedia_ontology()
     
     def __get_name_cached_file(self,query):
         if isinstance(query,unicode):
@@ -166,11 +167,10 @@ class Cdbpedia_enquirer:
         @rtype: string
         """
         deepest = None
-        my_dbpedia_ontology = Cdbpedia_ontology()
         onto_labels =  self.get_dbpedia_ontology_labels_for_dblink(dblink)
         pair_label_path = []
         for ontolabel in onto_labels:
-            this_path = my_dbpedia_ontology.get_ontology_path(ontolabel)
+            this_path = self.__dbpedia_ontology__.get_ontology_path(ontolabel)
             pair_label_path.append((ontolabel,len(this_path)))
         if len(pair_label_path) > 0:
             deepest = sorted(pair_label_path,key=lambda t: -t[1])[0][0]
@@ -248,8 +248,8 @@ class Cdbpedia_enquirer:
             
             if predicate == 'http://xmlns.com/foaf/0.1/isPrimaryTopicOf':
                 wikipage = object
-                
-            if lang is not None and wikipage is not None: break
+                break
+            
         return wikipage
 
     def get_wiki_page_id_for_dblink(self, dblink):
@@ -266,14 +266,16 @@ class Cdbpedia_enquirer:
         for dictionary in dbpedia_json:
             predicate = dictionary['predicate']['value']
             object    = dictionary['object']['value']
-            
+            print predicate
+            print object
+            print
             if 'xml:lang' in dictionary['object']:
                 lang = dictionary[u'object'][u'xml:lang']
             
             if predicate == 'http://dbpedia.org/ontology/wikiPageID':
                 wikipageid = object
+                break
                 
-            if lang is not None and wikipageid is not None: break
         return wikipageid
 
     def get_wordnet_type_for_dblink(self, dblink):
@@ -290,12 +292,12 @@ class Cdbpedia_enquirer:
         for dictionary in dbpedia_json:
             predicate = dictionary['predicate']['value']
             object    = dictionary['object']['value']
+           
             
             if predicate == 'http://dbpedia.org/property/wordnet_type':
                 wordnet_type = object.split('/')[-1]    # http://www.w3.org/2006/03/wn/wn20/instances/synset-actor-noun-1
-            
-            if wordnet_type is not None:
                 break
+            
         return wordnet_type
 
     def get_dbpedia_ontology_labels_for_dblink(self, dblink):
