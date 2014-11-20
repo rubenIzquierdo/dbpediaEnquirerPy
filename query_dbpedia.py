@@ -278,6 +278,7 @@ class Cdbpedia_enquirer:
         @return: the language (or None if there is no lang)
         @rtype: str
         """
+        dbpedia_json = self.query_dbpedia_for_dblink(dblink)
         lang =  None
         for dictionary in dbpedia_json:
             predicate = dictionary['predicate']['value']
