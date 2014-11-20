@@ -243,9 +243,6 @@ class Cdbpedia_enquirer:
             predicate = dictionary['predicate']['value']
             object    = dictionary['object']['value']
             
-            if 'xml:lang' in dictionary['object']:
-                lang = dictionary[u'object'][u'xml:lang']
-            
             if predicate == 'http://xmlns.com/foaf/0.1/isPrimaryTopicOf':
                 wikipage = object
                 break
@@ -266,18 +263,30 @@ class Cdbpedia_enquirer:
         for dictionary in dbpedia_json:
             predicate = dictionary['predicate']['value']
             object    = dictionary['object']['value']
-            print predicate
-            print object
-            print
-            if 'xml:lang' in dictionary['object']:
-                lang = dictionary[u'object'][u'xml:lang']
             
             if predicate == 'http://dbpedia.org/ontology/wikiPageID':
                 wikipageid = object
                 break
                 
         return wikipageid
-
+    
+    def get_language_for_dblink(self, dblink):
+        """
+        Returns the language given a DBpedia link (xml:lang predicate)
+        @param dblink: a dbedia link (http://dbpedia.org/resource/Tom_Cruise)
+        @type dblink: str
+        @return: the language (or None if there is no lang)
+        @rtype: str
+        """
+        lang =  None
+        for dictionary in dbpedia_json:
+            predicate = dictionary['predicate']['value']
+            object    = dictionary['object']['value']
+            if 'xml:lang' in dictionary['object']:
+                lang = dictionary[u'object'][u'xml:lang']
+                break
+        return lang
+    
     def get_wordnet_type_for_dblink(self, dblink):
         """
         Returns the wordnet type for the given DBpedia link (the relation http://dbpedia.org/property/wordnet_type is checked)
@@ -292,7 +301,6 @@ class Cdbpedia_enquirer:
         for dictionary in dbpedia_json:
             predicate = dictionary['predicate']['value']
             object    = dictionary['object']['value']
-           
             
             if predicate == 'http://dbpedia.org/property/wordnet_type':
                 wordnet_type = object.split('/')[-1]    # http://www.w3.org/2006/03/wn/wn20/instances/synset-actor-noun-1
