@@ -281,8 +281,6 @@ class Cdbpedia_enquirer:
         dbpedia_json = self.query_dbpedia_for_dblink(dblink)
         lang =  None
         for dictionary in dbpedia_json:
-            predicate = dictionary['predicate']['value']
-            object    = dictionary['object']['value']
             if 'xml:lang' in dictionary['object']:
                 lang = dictionary[u'object'][u'xml:lang']
                 break

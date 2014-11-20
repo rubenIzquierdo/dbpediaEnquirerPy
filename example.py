@@ -13,6 +13,7 @@ if __name__ == '__main__':
     my_dbpedia = Cdbpedia_enquirer()
     dblink = 'http://dbpedia.org/resource/Tom_Cruise'
     dblink = 'http://dbpedia.org/resource/El_Tiempo_(Honduras)'
+    print 'LANG:',my_dbpedia.get_language_for_dblink(dblink)
     print 'WIKIPAGEID:',my_dbpedia.get_wiki_page_id_for_dblink(dblink)
     print 'Dblink:',dblink
     print '\tWordnet type:',     my_dbpedia.get_wordnet_type_for_dblink(dblink)
