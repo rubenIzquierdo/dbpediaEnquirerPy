@@ -27,6 +27,7 @@ import sys
 import os
 import hashlib
 import cPickle
+import urllib
 
 from SPARQLWrapper import SPARQLWrapper, JSON
 from resources import OWL_FILE
@@ -135,6 +136,12 @@ class Cdbpedia_enquirer:
         if isinstance(query,unicode):
             query = query.encode('utf-8')
         cached_file =self.__cache_folder__+'/'+hashlib.sha256(query).hexdigest()
+        return cached_file
+    
+    def __get_name_cached_ontology_type(self,dblink):
+        if isinstance(dblink,unicode):
+            dblink = dblink.encode('utf-8')
+        cached_file =self.__cache_folder__+'/'+hashlib.sha256(dblink).hexdigest()+'.ontologytype'
         return cached_file
         
     def __my_query(self,this_query):
@@ -325,4 +332,30 @@ class Cdbpedia_enquirer:
             object    = dictionary['object']['value']
             if 'rdf-syntax-ns#type' in predicate and 'http://dbpedia.org/ontology/' in object:
                 ontology_labels.append(object)
-        return ontology_labels        
+        return ontology_labels    
+    
+    def get_dbpedia_ontology_labels_for_dblink_html(self, dblink): 
+        if not dblink.startswith('http://'):
+            dblink = 'http://'+dblink
+        ontology_link = None
+        cached_file = self.__get_name_cached_ontology_type(dblink)
+        print cached_file
+        if os.path.exists(cached_file):
+            fd = open(cached_file,'r')
+            ontology_link = fd.readline()
+            fd.close()
+        else:
+            reader1 = urllib.urlopen(dblink)
+            line = None
+            for line in reader1:
+                if 'An Entity of Type : <a href' in line:
+                    break
+            reader1.close()
+            if line is not None:
+                p1 = line.find('href="')+len('href="')
+                p2 = line.find('"',p1)
+                ontology_link = line[p1:p2]
+            fd = open(cached_file,'w')
+            fd.write('%s\n' % ontology_link)
+            fd.close()
+        return ontology_link

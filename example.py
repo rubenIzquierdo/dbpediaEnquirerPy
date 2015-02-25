@@ -11,7 +11,8 @@ from dbpediaEnquirerPy import *
 
 if __name__ == '__main__':
     my_dbpedia = Cdbpedia_enquirer()
-    dblink = 'http://dbpedia.org/resource/Tom_Cruise'
+    
+    '''dblink = 'http://dbpedia.org/resource/Tom_Cruise'
     dblink = 'http://dbpedia.org/resource/El_Tiempo_(Honduras)'
     print 'LANG:',my_dbpedia.get_language_for_dblink(dblink)
     print 'WIKIPAGEID:',my_dbpedia.get_wiki_page_id_for_dblink(dblink)
@@ -30,3 +31,9 @@ if __name__ == '__main__':
     onto_label = 'http://dbpedia.org/ontology/RallyDriver'
     print 'Ontological path for', onto_label, ontology.get_ontology_path(onto_label)
     print 'Depth in ontology:',ontology.get_depth(onto_label)
+    '''
+    
+    #Trying for spanish
+    dblink = 'dbpedia.org/resource/Espa\xc3\xb1a'
+    onto_labels =  my_dbpedia.get_dbpedia_ontology_labels_for_dblink_html(dblink)
+    print onto_labels
