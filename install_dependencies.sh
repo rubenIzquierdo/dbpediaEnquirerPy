@@ -17,10 +17,9 @@ mkdir resources 2>/dev/null
 cd resources
 URL='http://downloads.dbpedia.org/2014/dbpedia_2014.owl.bz2'
 owl_name_bz2=`basename $URL`
-owl_name=${owl_name_bz2::-4}
 wget $URL
 bunzip2 $owl_name_bz2
-echo "OWL_FILE = \"$owl_name\"" > __init__.py
+echo "OWL_FILE = \"$owl_name_bz2\"[:-4]" > __init__.py
 cd ..
 
 

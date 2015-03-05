@@ -35,5 +35,6 @@ if __name__ == '__main__':
     
     #Trying for spanish
     dblink = 'dbpedia.org/resource/Espa\xc3\xb1a'
+    dblink = 'http://dbpedia.org/resource/Francisco_Labastida'
     onto_labels =  my_dbpedia.get_dbpedia_ontology_labels_for_dblink_html(dblink)
     print onto_labels
