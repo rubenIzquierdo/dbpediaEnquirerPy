@@ -1,3 +1,5 @@
+
+
 """
 This module contains two classes that encapsulate and provide access to DBpedia online (using SPARQL and a cache method for efficiency)
 and another one to access and query the DBpedia ontology. There are two main classes to provide this functionality:
@@ -127,7 +129,8 @@ class Cdbpedia_enquirer:
     """
     This class allows to query dbpedia using the Virtuoso SPARQL endpoint and gives access to different type of information
     """
-    def __init__(self):
+    def __init__(self, endpoint='http://dbpedia.org/sparql'):
+        self.__endpoint__ = endpoint
         self.__thisfolder__ = os.path.dirname(os.path.realpath(__file__))
         self.__cache_folder__ = self.__thisfolder__+'/.dbpedia_cache'
         self.__dbpedia_ontology__ = Cdbpedia_ontology()
@@ -151,7 +154,7 @@ class Cdbpedia_enquirer:
             results = cPickle.load(fd)
             fd.close()
         else:
-            sparql = SPARQLWrapper('http://dbpedia.org/sparql')
+            sparql = SPARQLWrapper(self.__endpoint__)
             sparql.setQuery(this_query)
             sparql.setReturnFormat(JSON)
             query   = sparql.query()
@@ -359,3 +362,19 @@ class Cdbpedia_enquirer:
             fd.write('%s\n' % ontology_link)
             fd.close()
         return ontology_link
+
+    def query_dbpedia_for_unique_dblink(self, dblink):
+        """
+        Perform a check whether a dbpedia resource is unique
+        @param dblink: a dbedia link (http://dbpedia.org/resource/Tom_Cruise)
+        @type dblink: str
+        @return: dictionary with triples
+        @rtype: dict
+        """
+        query = """
+                PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                SELECT ?predicate ?object
+                WHERE { <%s> ?predicate ?object . FILTER NOT EXISTS { <%s> <http://dbpedia.org/ontology/wikiPageDisambiguates> ?o } }
+                """ % (dblink, dblink)
+        results = self.__my_query(query)
+        return results
