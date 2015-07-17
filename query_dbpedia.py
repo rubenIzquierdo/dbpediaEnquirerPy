@@ -316,6 +316,23 @@ class Cdbpedia_enquirer:
                 break
             
         return wordnet_type
+    
+    def is_person(self, dblink):
+        """
+        Returns True if the link has rdf:type dbpedia:Person, False otherwise
+        @param dblink" a dbpedia link (http://dbpedia.org/resource/Tom_Cruise)
+        @type dblink: str
+        @return: whether the dblink is a dbpedia person
+        @rtype: str
+        """
+        dbpedia_json = self.query_dbpedia_for_dblink(dblink)
+        for dictionary in dbpedia_json:
+            predicate = dictionary['predicate']['value']
+            object = dictionary['object']['value']
+            
+            if predicate == 'rdf:type' and object == 'http://dbpedia.org/ontology/person':
+                return True
+        return False
 
     def get_dbpedia_ontology_labels_for_dblink(self, dblink):
         """
