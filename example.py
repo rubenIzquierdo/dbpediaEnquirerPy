@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
+
+
 import sys
 #If the module dbpediaEnquirerPy is no the python path (or same folder) you don't need to see this, this is just for this example script.
 sys.path.append('../')
@@ -36,5 +39,5 @@ if __name__ == '__main__':
     #Trying for spanish
     dblink = 'dbpedia.org/resource/Espa\xc3\xb1a'
     dblink = 'http://dbpedia.org/resource/Francisco_Labastida'
-    onto_labels =  my_dbpedia.get_dbpedia_ontology_labels_for_dblink_html(dblink)
-    print onto_labels
+    onto_labels =  my_dbpedia.get_dbpedia_ontology_labels_for_dblink(dblink)
+    print(onto_labels)
