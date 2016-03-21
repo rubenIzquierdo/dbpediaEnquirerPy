@@ -164,7 +164,7 @@ class Cdbpedia_enquirer:
             sparql.setQuery(this_query)
             sparql.setReturnFormat(JSON)
             query   = sparql.query()
-            query.setJSONModule(json)
+            #query.setJSONModule(json)
             results = query.convert()['results']['bindings']
             if not os.path.exists(self.__cache_folder__): 
                 os.mkdir(self.__cache_folder__)
