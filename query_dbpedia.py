@@ -37,7 +37,7 @@ import urllib
 #import urllib.request, urllib.parse, urllib.error
 
 from SPARQLWrapper import SPARQLWrapper, JSON
-from resources import OWL_FILE
+from .resources import OWL_FILE
 
 
 class Cdbpedia_ontology:

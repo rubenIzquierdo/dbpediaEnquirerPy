@@ -1,2 +1,2 @@
-from query_dbpedia import Cdbpedia_enquirer, Cdbpedia_ontology
+from .query_dbpedia import Cdbpedia_enquirer, Cdbpedia_ontology
 
