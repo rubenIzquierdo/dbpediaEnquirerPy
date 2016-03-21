@@ -24,12 +24,12 @@ __author__ = 'Ruben Izquierdo Bevia'
 #
 ################################
 
-import cjson
+import json
 import sys
 import os
 import hashlib
-import cPickle
-import urllib
+import pickle
+import urllib.request, urllib.parse, urllib.error
 
 from SPARQLWrapper import SPARQLWrapper, JSON
 from resources import OWL_FILE
@@ -79,7 +79,7 @@ class Cdbpedia_ontology:
         @rtype: bool
         """
         is_super_class = False
-        for subclass, superclass in self.superclass_for_class.items():
+        for subclass, superclass in list(self.superclass_for_class.items()):
             if superclass == onto_label:
                 is_super_class = True
                 break
@@ -136,13 +136,13 @@ class Cdbpedia_enquirer:
         self.__dbpedia_ontology__ = Cdbpedia_ontology()
     
     def __get_name_cached_file(self,query):
-        if isinstance(query,unicode):
+        if isinstance(query,str):
             query = query.encode('utf-8')
         cached_file =self.__cache_folder__+'/'+hashlib.sha256(query).hexdigest()
         return cached_file
     
     def __get_name_cached_ontology_type(self,dblink):
-        if isinstance(dblink,unicode):
+        if isinstance(dblink,str):
             dblink = dblink.encode('utf-8')
         cached_file =self.__cache_folder__+'/'+hashlib.sha256(dblink).hexdigest()+'.ontologytype'
         return cached_file
@@ -151,19 +151,19 @@ class Cdbpedia_enquirer:
         cached_file = self.__get_name_cached_file(this_query)
         if os.path.exists(cached_file):
             fd = open(cached_file,'rb')
-            results = cPickle.load(fd)
+            results = pickle.load(fd)
             fd.close()
         else:
             sparql = SPARQLWrapper(self.__endpoint__)
             sparql.setQuery(this_query)
             sparql.setReturnFormat(JSON)
             query   = sparql.query()
-            query.setJSONModule(cjson)
+            #query.setJSONModule(cjson)
             results = query.convert()['results']['bindings']
             if not os.path.exists(self.__cache_folder__): 
                 os.mkdir(self.__cache_folder__)
             fd = open(cached_file,'wb')
-            cPickle.dump(results, fd, protocol=-1)
+            pickle.dump(results, fd, protocol=-1)
             fd.close()
         return results
     
@@ -211,7 +211,7 @@ class Cdbpedia_enquirer:
                 """ % (ontology_label,len(instances))
             #print query
             if log:
-                print>>sys.stderr,'Querying dbpedia for',ontology_label,' OFFSET=',len(instances)
+                print('Querying dbpedia for',ontology_label,' OFFSET=',len(instances), file=sys.stderr)
                 
             results = self.__my_query(query)
             if len(results) == 0:
@@ -292,7 +292,7 @@ class Cdbpedia_enquirer:
         lang =  None
         for dictionary in dbpedia_json:
             if 'xml:lang' in dictionary['object']:
-                lang = dictionary[u'object'][u'xml:lang']
+                lang = dictionary['object']['xml:lang']
                 break
         return lang
     
@@ -354,32 +354,6 @@ class Cdbpedia_enquirer:
                 ontology_labels.append(object)
         return ontology_labels    
     
-    def get_dbpedia_ontology_labels_for_dblink_html(self, dblink): 
-        if not dblink.startswith('http://'):
-            dblink = 'http://'+dblink
-        ontology_link = None
-        cached_file = self.__get_name_cached_ontology_type(dblink)
-        print cached_file
-        if os.path.exists(cached_file):
-            fd = open(cached_file,'r')
-            ontology_link = fd.readline()
-            fd.close()
-        else:
-            reader1 = urllib.urlopen(dblink)
-            line = None
-            for line in reader1:
-                if 'An Entity of Type : <a href' in line:
-                    break
-            reader1.close()
-            if line is not None:
-                p1 = line.find('href="')+len('href="')
-                p2 = line.find('"',p1)
-                ontology_link = line[p1:p2]
-            fd = open(cached_file,'w')
-            fd.write('%s\n' % ontology_link)
-            fd.close()
-        return ontology_link
-
     def query_dbpedia_for_unique_dblink(self, dblink):
         """
         Perform a check whether a dbpedia resource is unique
